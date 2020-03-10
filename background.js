@@ -1,10 +1,15 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
 chrome.browserAction.onClicked.addListener(function(tab) { 
-    var newURL = "https://ubbapps.nwtel.ca/cable_usage/secured/index.jsp";
-    chrome.tabs.create({ url: newURL });
+    chrome.storage.sync.get({
+        mac_address: ''
+      }, function(items) {
+        if(items.mac_address.length > 0){
+            var newURL = "https://ubbapps.nwtel.ca/cable_usage/secured/index.jsp";
+            chrome.tabs.create({ url: newURL });
+        } else {
+            chrome.tabs.create({ url: "options.html" });
+        }
+        
+    });
 });

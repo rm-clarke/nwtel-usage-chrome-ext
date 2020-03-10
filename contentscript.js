@@ -1,11 +1,11 @@
+'use strict';
+
 chrome.storage.sync.get({
     mac_address: ''
   }, function(items) {
-    'use strict';
-
     // Autologin
     try {
-        if(value=items.mac_address.length() > 0){
+        if(items.mac_address.length > 0){
             document.getElementById('MAC').value=items.mac_address;
             document.getElementById('submit_btn').click();
         }
