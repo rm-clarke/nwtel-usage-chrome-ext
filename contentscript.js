@@ -5,8 +5,11 @@ chrome.storage.sync.get({
 
     // Autologin
     try {
-        document.getElementById('MAC').value=items.mac_address;
-        document.getElementById('submit_btn').click();
+        if(value=items.mac_address.length() > 0){
+            document.getElementById('MAC').value=items.mac_address;
+            document.getElementById('submit_btn').click();
+        }
+        
     } catch(err){
         // Not on logon page, continue.
     }
