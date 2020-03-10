@@ -9,7 +9,7 @@ function save_options() {
     status.textContent = 'Options saved. Click the extension button again to go to the usage site.';
     setTimeout(function() {
       status.textContent = '';
-    }, 750);
+    }, 10000);
   });
 }
 
