@@ -1,0 +1,24 @@
+{
+  "name": "NWTel Usage Tool",
+  "version": "1.0",
+  "description": "Improves NWTel Usage tool by automatically inputting MAC address and generating projections based on your usage.",
+  "permissions": ["activeTab","storage"],
+  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ubbapps.nwtel.ca/cable_usage/secured/index.jsp"
+      ],
+      "js": ["contentscript.js"]
+    }
+  ],
+  "manifest_version": 2,
+  "browser_action": {}
+}
