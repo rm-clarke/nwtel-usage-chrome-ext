@@ -25,7 +25,6 @@ function save_options() {
     }, 1000);
   });
 }
-
 // Restores mac_address state using the preferences stored in chrome.storage.
 function restore_options() {
   chrome.storage.sync.get({
