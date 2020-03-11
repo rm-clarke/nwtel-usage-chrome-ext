@@ -16,7 +16,8 @@
       "matches": [
         "https://ubbapps.nwtel.ca/cable_usage/secured/index.jsp"
       ],
-      "js": ["contentscript.js"]
+      "js": ["contentscript.js"],
+      "all_frames": true
     }
   ],
   "manifest_version": 2,
