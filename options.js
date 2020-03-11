@@ -16,6 +16,7 @@ function save_options() {
           setTimeout(function() {
             status.textContent = 'Options saved. Redirecting to usage site in 1.';
             setTimeout(function() {
+              status.textContent = '';
                 var newURL = "https://ubbapps.nwtel.ca/cable_usage/secured/index.jsp";
                 chrome.tabs.create({ url: newURL });
             }, 1000);
