@@ -18,6 +18,13 @@
       ],
       "js": ["contentscript.js"],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://ubbapps.nwtel.ca/cable_usage/error.jsp"
+      ],
+      "js": ["reached_error_page.js"],
+      "all_frames": true
     }
   ],
   "manifest_version": 2,
