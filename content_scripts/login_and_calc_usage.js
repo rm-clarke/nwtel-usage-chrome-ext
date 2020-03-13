@@ -15,32 +15,59 @@ chrome.storage.sync.get({
         // Not on logon page, continue.
     }
     try {
-        
         var month_calc = new UsageMonthCalculator();
         var usage = new Usage(month_calc.percent_month_completed);
         var usage_message = new UsageMessage(usage);
+        new MessageElement(usage_message);
+    } catch(err){ throw err}
+});
 
-        //var usage_text = usage_message.text;
+class MessageElement {
+    constructor(usage_message){
         var new_element = document.createElement("strong");
         var element = document.getElementsByTagName("p")[4];
         new_element.style.cssText = usage_message.style;
         var node = document.createTextNode(usage_message.text);
         new_element.appendChild(node);
         element.appendChild(new_element);
-    } catch(err){}
-});
+    }
+}
 
 class UsageMessage {
     constructor(usage){
-        this.style = 'font-size:1.5em;background-color:LightGrey;border-style: outset;padding: .1em .1em .1em .1em;';
-        var usage_diff_text = "You are " + usage.difference + " GB under your expected usage.";
+        this.setBaseStyle()
         if(usage.difference < 0){
-            usage_diff_text = "You are " + (0 - usage.difference) + " GB over your expected usage.";
-            this.setFontBad();
+            this.setMessageOver(usage)
         } else {
-            this.setFontGood();
+            this.setMessageUnder(usage)
         }
-        this.text = usage_diff_text + " You are projected to use " + usage.projection + " GB.";
+        this.addProjectionMessage(usage)
+    }
+
+    setBaseStyle(){
+        this.style = 'font-size:1.5em;';
+    }
+
+    addProjectionMessage(usage){
+        this.text += "You are projected to use " + usage.projection + " GB.";
+    }
+
+    setMessageOver(usage){
+        this.setMessage(usage.difference);
+        this.setFontBad();
+    }
+
+    setMessageUnder(usage){
+        this.setMessage(usage.difference);
+        this.setFontGood();
+    }
+
+    setMessage(usage_diff){
+        var overUnderStr = "under";
+        if(usage_diff < 0){
+            overUnderStr = "over";
+        }
+        this.text =  "You are " + Math.abs(usage_diff) + " GB " + overUnderStr + " your expected usage.";
     }
 
     setFontGood(){
@@ -73,4 +100,4 @@ class Usage {
         this.difference = ((this.max * percent_month_completed) - this.current).toFixed(1);
         this.projection = (this.current / percent_month_completed).toFixed(1);
     }
-  }
+}
