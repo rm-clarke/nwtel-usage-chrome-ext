@@ -35,13 +35,9 @@ class MessageElement {
 
 class UsageMessage {
     constructor(usage){
-        this.setBaseStyle()
-        if(usage.difference < 0){
-            this.setMessageOver(usage)
-        } else {
-            this.setMessageUnder(usage)
-        }
-        this.addProjectionMessage(usage)
+        this.setBaseStyle();
+        this.setMessage(usage.difference);
+        this.addProjectionMessage(usage);
     }
 
     setBaseStyle(){
@@ -52,30 +48,23 @@ class UsageMessage {
         this.text += "You are projected to use " + usage.projection + " GB.";
     }
 
-    setMessageOver(usage){
-        this.setMessage(usage.difference);
-        this.setFontBad();
-    }
-
-    setMessageUnder(usage){
-        this.setMessage(usage.difference);
-        this.setFontGood();
-    }
-
     setMessage(usage_diff){
         var overUnderStr = "under";
         if(usage_diff < 0){
             overUnderStr = "over";
+            this.setFontBad();
+        } else {
+            this.setFontGood();
         }
         this.text =  "You are " + Math.abs(usage_diff) + " GB " + overUnderStr + " your expected usage.";
     }
 
     setFontGood(){
-        this.style += 'color:green';
+        this.style += 'color:green;';
     }
 
     setFontBad(){
-        this.style += 'color:red';
+        this.style += 'color:red;';
     }
 }
 
