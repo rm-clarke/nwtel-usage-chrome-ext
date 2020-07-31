@@ -1,6 +1,6 @@
 {
   "name": "NWTel Usage Tool Improved",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Improves NWTel Usage tool by automatically inputting MAC address and generating projections based on your usage. Clicking the extension will bring you to the usage tool.",
   "permissions": ["activeTab","storage"],
   "options_page": "options/options.html",

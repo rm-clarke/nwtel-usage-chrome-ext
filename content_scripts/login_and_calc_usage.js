@@ -70,6 +70,7 @@ class UsageMessage {
 class Usage {
     constructor(percent_month_completed) {
         var percent_month_completed = this.getPercentMonthCompleted();
+        
         this.max = document.getElementsByTagName("td")[1].innerText.split(" ")[0];
         var max_usage = this.max
         chrome.storage.sync.set({
@@ -85,10 +86,11 @@ class Usage {
         var today = new Date();
         var unix_now = Math.round(today.getTime()/1000);
         var unix_start_of_month = Math.round((new Date(today.getFullYear(), today.getMonth(), 1)).getTime()/1000);
-        var unix_end_of_month = Math.round((new Date(today.getFullYear(), today.getMonth() + 1, 0)).getTime()/1000);
+        var unix_end_of_month = Math.round((new Date(today.getFullYear(), today.getMonth() + 1, 1)).getTime()/1000);
         // Months in seconds calculations
         var seconds_in_month = unix_end_of_month - unix_start_of_month;
         var seconds_into_month = unix_now - unix_start_of_month;
+        
         return (seconds_into_month / seconds_in_month); 
     }
 }

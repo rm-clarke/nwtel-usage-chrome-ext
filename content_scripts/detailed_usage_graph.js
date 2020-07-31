@@ -90,26 +90,37 @@ chrome.storage.sync.get({
         data: {
             labels: days,
             datasets: [{
-                label: 'Data usage (GB)',
+                label: 'Total data usage (GB)',
                 data: total_usage,
                 backgroundColor: [
-                    'rgba(0, 0, 255, 0.1)'
+                    'rgba(113,193,253, 0)'
                 ],
                 borderColor: [
-                    'rgba(0, 0, 255, 1)'
+                    'rgba(113,193,253, 1)'
                 ],
-                borderWidth: 1
+                borderWidth: 3
+            },
+            {
+                label: 'Daily usage (GB)',
+                data: daily_usage,
+                backgroundColor: [
+                    'rgba(255,195,121, 0)'
+                ],
+                borderColor: [
+                    'rgba(255,195,121, 1)'
+                ],
+                borderWidth: 3
             },
             {
                 label: 'Usage allotment distribution (${max_usage}GB)',
                 data: daily_allowed_total_usage,
                 backgroundColor: [
-                    'rgba(200, 200, 200, .2)'
+                    'rgba(200, 200, 200, 0)'
                 ],
                 borderColor: [
-                    'rgba(0, 0, 0, 1)'
+                    'rgba(128, 128, 128, 1)'
                 ],
-                borderWidth: 1
+                borderWidth: 3
             }]
         },
         options: {
@@ -120,13 +131,13 @@ chrome.storage.sync.get({
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'usage (GB)'
+                        labelString: 'Usage (GB)'
                     }
                 }],
                 xAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: 'day'
+                        labelString: 'Day of month'
                       }
                 }]
             }
