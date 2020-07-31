@@ -15,8 +15,7 @@ chrome.storage.sync.get({
         // Not on logon page, continue.
     }
     try {
-        var month_calc = new UsageMonthCalculator();
-        var usage = new Usage(month_calc.percent_month_completed);
+        var usage = new Usage();
         var usage_message = new UsageMessage(usage);
         new MessageElement(usage_message);
     } catch(err){ throw err}
@@ -68,8 +67,20 @@ class UsageMessage {
     }
 }
 
-class UsageMonthCalculator {
-    constructor(){
+class Usage {
+    constructor(percent_month_completed) {
+        var percent_month_completed = this.getPercentMonthCompleted();
+        this.max = document.getElementsByTagName("td")[1].innerText.split(" ")[0];
+        var max_usage = this.max
+        chrome.storage.sync.set({
+            max_usage: max_usage,
+        })
+        this.current = document.getElementsByTagName("a")[3].text.split(" ")[0];
+        this.difference = ((this.max * percent_month_completed) - this.current).toFixed(1);
+        this.projection = (this.current / percent_month_completed).toFixed(1);
+    }
+    
+    getPercentMonthCompleted(){
         // Unix time calculations
         var today = new Date();
         var unix_now = Math.round(today.getTime()/1000);
@@ -78,15 +89,6 @@ class UsageMonthCalculator {
         // Months in seconds calculations
         var seconds_in_month = unix_end_of_month - unix_start_of_month;
         var seconds_into_month = unix_now - unix_start_of_month;
-        this.percent_month_completed = seconds_into_month / seconds_in_month;
-    }
-}
-
-class Usage {
-    constructor(percent_month_completed) {
-        this.max = document.getElementsByTagName("td")[1].innerText.split(" ")[0];
-        this.current = document.getElementsByTagName("a")[3].text.split(" ")[0];
-        this.difference = ((this.max * percent_month_completed) - this.current).toFixed(1);
-        this.projection = (this.current / percent_month_completed).toFixed(1);
+        return (seconds_into_month / seconds_in_month); 
     }
 }

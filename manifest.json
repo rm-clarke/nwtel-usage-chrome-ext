@@ -25,6 +25,13 @@
       ],
       "js": ["content_scripts/reached_error_page.js"],
       "all_frames": true
+    },
+    {
+      "matches": [
+        "https://ubbapps.nwtel.ca/cable_usage/secured/details.jsp*"
+      ],
+      "js": ["content_scripts/detailed_usage_graph.js"],
+      "all_frames": true
     }
   ],
   "manifest_version": 2,
