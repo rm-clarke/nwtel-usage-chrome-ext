@@ -4,14 +4,14 @@ chrome.storage.sync.get({
     max_usage: ''
   }, function(items){
     var max_usage = items.max_usage
-    //console.log("max_usage:",max_usage)
-
+    
     var daily_usage = []
     var days = []
 
+    // Grab all td elements so days and daily usage can be parsed
     var elements = document.getElementsByTagName("td")
 
-    // 3rd + 7 split on space first element for days
+    // Starting with the 3rd index and every 7th thereafter to get days
     var k = 0;
     for(var i=3; i<elements.length; i=i+7){
         days[k] = elements[i].innerText.split(" ")[0];
@@ -19,23 +19,22 @@ chrome.storage.sync.get({
     }
     //console.log("Days:", days)
 
-    // 6th + 7 split on space first element for usage
+    // Starting with the 6th index and every 7th thereafter to get daily usage
     var k = 0;
     for(var i=6; i<elements.length; i=i+7){
         daily_usage[k] = elements[i].innerText.split(" ")[0];
         k++;
     }
-    //console.log("Daily usage:", daily_usage)
 
-    // add link to chart
+    // Create link to chart anchor
     var new_element = document.createElement("a");
     var element = document.getElementsByTagName("p")[3];       
     new_element.href = "#chart" 
-    var node = document.createTextNode("       Go to chart");
+    var node = document.createTextNode("View chart");
     new_element.appendChild(node);
-    element.appendChild(new_element);
+    element.parentNode.insertBefore(new_element, element.nextSibling);
 
-    // add div to hold chart
+    // Create chart div
     var new_element = document.createElement("div");
     var element = document.getElementsByTagName("body")[0];       
     new_element.className = "chart-container" 
@@ -44,14 +43,14 @@ chrome.storage.sync.get({
     new_element.appendChild(node);
     element.appendChild(new_element);
 
-    // add link to chart div
+    // Create anchor for chart
     var new_element = document.createElement("a");
     var element = document.getElementsByClassName("chart-container")[0];       
     new_element.name = "chart" 
     new_element.appendChild(node);
     element.appendChild(new_element);
 
-    // add canvas to div
+    // Create canvas for chart
     var new_element = document.createElement("canvas");
     var element = document.getElementsByClassName("chart-container")[0];       
     new_element.id = "myChart" 
@@ -59,25 +58,18 @@ chrome.storage.sync.get({
     new_element.appendChild(node);
     element.appendChild(new_element);
 
-    var actualCode = `var monthly_total_usage = ${max_usage}
-    //var days = [1,2,3,4,5,6,7,8,9,10]
+    // Chart creation code to be injected
+    var code_injection = `var monthly_total_usage = ${max_usage}
     var days = [${ days }]
-    //var daily_usage = [5,6,3,8,4,7,11,17,12,100]
     var daily_usage = [${ daily_usage }]
-    // ----------------------------------------
-    //console.log("yeet")
     function daysInMonth (month, year) {
         return new Date(year, month, 0).getDate();
     }
     var date = new Date()
-
     var days_this_month = daysInMonth(date.getMonth()+1,date.getFullYear())
-
     var total_usage = []
     var daily_allowed_usage = monthly_total_usage / days_this_month
     var daily_allowed_total_usage = []
-
-    // calculate fit line for usage
     for(var i=0; i<days.length; i++){
         if(i>0){
             daily_allowed_total_usage[i] = daily_allowed_total_usage[i-1] + daily_allowed_usage
@@ -85,8 +77,6 @@ chrome.storage.sync.get({
             daily_allowed_total_usage[i] = daily_allowed_usage
         }
     }
-
-    // calculate daily usage
     for(var i=0; i<days.length; i++){
         if(i>0){
             total_usage[i] = total_usage[i-1] + daily_usage[i]
@@ -94,7 +84,6 @@ chrome.storage.sync.get({
             total_usage[i] = daily_usage[i]
         }
     }
-
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -104,7 +93,7 @@ chrome.storage.sync.get({
                 label: 'Data usage (GB)',
                 data: total_usage,
                 backgroundColor: [
-                    'rgba(0, 0, 255, 0.3)'
+                    'rgba(0, 0, 255, 0.1)'
                 ],
                 borderColor: [
                     'rgba(0, 0, 255, 1)'
@@ -112,10 +101,10 @@ chrome.storage.sync.get({
                 borderWidth: 1
             },
             {
-                label: 'Expected usage (${max_usage}GB)',
+                label: 'Usage allotment distribution (${max_usage}GB)',
                 data: daily_allowed_total_usage,
                 backgroundColor: [
-                    'rgba(200, 200, 200, .8)'
+                    'rgba(200, 200, 200, .2)'
                 ],
                 borderColor: [
                     'rgba(0, 0, 0, 1)'
@@ -128,13 +117,23 @@ chrome.storage.sync.get({
                 yAxes: [{
                     ticks: {
                         beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'usage (GB)'
                     }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'day'
+                      }
                 }]
             }
         }
     });`
     
-
+    // Helper function to ensure script loaded before code execution
     function loadScript(scriptUrl) {
         const script = document.createElement('script');
         script.src = scriptUrl;
@@ -150,12 +149,12 @@ chrome.storage.sync.get({
         });
       }
       
-      // use
+      // Injects code after Chart.js has been loaded
       loadScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js')
         .then(() => {
             //console.log('Script loaded!');
             var script = document.createElement('script');
-            script.textContent = actualCode;
+            script.textContent = code_injection;
             (document.head||document.documentElement).appendChild(script);
             script.remove();
         })
