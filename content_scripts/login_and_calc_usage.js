@@ -14,13 +14,13 @@ chrome.storage.sync.get({
     } catch(err){
         // Not on logon page, continue.
     }
-    //try {
+    try {
         var usage = new Usage();
         var usage_message = new UsageMessage(usage, "expected");
         new MessageElement(usage_message);
         var usage_message = new UsageMessage(usage, "projection");
         new MessageElement(usage_message);
-    //} catch(err){ throw err}
+    } catch(err){ throw err}
 });
 
 class MessageElement {
