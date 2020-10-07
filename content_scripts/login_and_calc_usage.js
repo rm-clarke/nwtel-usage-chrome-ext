@@ -14,17 +14,21 @@ chrome.storage.sync.get({
     } catch(err){
         // Not on logon page, continue.
     }
-    try {
+    //try {
         var usage = new Usage();
-        var usage_message = new UsageMessage(usage);
+        var usage_message = new UsageMessage(usage, "expected");
         new MessageElement(usage_message);
-    } catch(err){ throw err}
+        var usage_message = new UsageMessage(usage, "projection");
+        new MessageElement(usage_message);
+    //} catch(err){ throw err}
 });
 
 class MessageElement {
     constructor(usage_message){
-        var new_element = document.createElement("strong");
-        var element = document.getElementsByTagName("p")[4];
+        var new_element = document.createElement("li");
+        //var element = document.getElementsByTagName("p")[4];
+        var element = document.getElementsByTagName("ul")[0];
+        
         new_element.style.cssText = usage_message.style;
         var node = document.createTextNode(usage_message.text);
         new_element.appendChild(node);
@@ -33,29 +37,39 @@ class MessageElement {
 }
 
 class UsageMessage {
-    constructor(usage){
+    constructor(usage, setting){
         this.setBaseStyle();
-        this.setMessage(usage.difference);
-        this.addProjectionMessage(usage);
+        if(setting == "projection"){
+            this.setProjectionMessage(usage);
+        } else if(setting == "expected"){
+            this.setExpectedMessage(usage);
+        }
     }
 
     setBaseStyle(){
-        this.style = 'font-size:1.5em;';
+        this.style = '';
     }
 
-    addProjectionMessage(usage){
-        this.text += "You are projected to use " + usage.projection + " GB.";
-    }
-
-    setMessage(usage_diff){
+    setProjectionMessage(usage){
         var overUnderStr = "under";
-        if(usage_diff < 0){
+        if(usage.difference < 0){
             overUnderStr = "over";
             this.setFontBad();
         } else {
             this.setFontGood();
         }
-        this.text =  "You are " + Math.abs(usage_diff) + " GB " + overUnderStr + " your expected usage.";
+        this.text = "You are projected to use " + usage.projection + " GB.";
+    }
+
+    setExpectedMessage(usage){
+        var overUnderStr = "under";
+        if(usage.difference < 0){
+            overUnderStr = "over";
+            this.setFontBad();
+        } else {
+            this.setFontGood();
+        }
+        this.text =  "You are " + Math.abs(usage.difference) + " GB " + overUnderStr + " your expected usage.";
     }
 
     setFontGood(){
@@ -71,12 +85,14 @@ class Usage {
     constructor(percent_month_completed) {
         var percent_month_completed = this.getPercentMonthCompleted();
         
-        this.max = document.getElementsByTagName("td")[1].innerText.split(" ")[0];
+        //this.max = document.getElementsByTagName("td")[1].innerText.split(" ")[0];
+        this.max = document.getElementsByTagName("span")[4].innerText.split(" ")[5]
         var max_usage = this.max
         chrome.storage.sync.set({
             max_usage: max_usage,
         })
-        this.current = document.getElementsByTagName("a")[3].text.split(" ")[0];
+        //this.current = document.getElementsByTagName("a")[3].text.split(" ")[0];
+        this.current = document.getElementsByTagName("span")[3].innerText.split(" ")[6];
         this.difference = ((this.max * percent_month_completed) - this.current).toFixed(1);
         this.projection = (this.current / percent_month_completed).toFixed(1);
     }
