@@ -11,24 +11,24 @@ chrome.storage.sync.get({
     // Grab all td elements so days and daily usage can be parsed
     var elements = document.getElementsByTagName("td")
 
-    // Starting with the 3rd index and every 7th thereafter to get days
+    // Starting with the 0th index and every 4th thereafter to get days
     var k = 0;
-    for(var i=3; i<elements.length; i=i+7){
+    for(var i=0; i<elements.length; i=i+4){
         days[k] = elements[i].innerText.split(" ")[0];
         k++;
     }
     //console.log("Days:", days)
 
-    // Starting with the 6th index and every 7th thereafter to get daily usage
+    // Starting with the 3rd index and every 4th thereafter to get daily usage
     var k = 0;
-    for(var i=6; i<elements.length; i=i+7){
+    for(var i=3; i<elements.length; i=i+4){
         daily_usage[k] = elements[i].innerText.split(" ")[0];
         k++;
     }
 
     // Create link to chart anchor
     var new_element = document.createElement("a");
-    var element = document.getElementsByTagName("p")[3];       
+    var element = document.getElementsByTagName("ul")[0];       
     new_element.href = "#chart" 
     var node = document.createTextNode("View chart");
     new_element.appendChild(node);
